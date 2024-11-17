@@ -96,7 +96,7 @@ export default function Transcriptions() {
                     KnowNonsense
                 </b>
             </div>
-            <p className="text-base mb-3">
+            <p className="text-base mb-1">
                 Real time fact checking pushing the conversation forward.
             </p>
             {files ? files.files.map((file) => (
