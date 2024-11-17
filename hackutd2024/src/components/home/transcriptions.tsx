@@ -36,7 +36,12 @@ export default function Transcriptions() {
 
     useEffect(() => {
         const fetchFiles = async () => {
-            setFiles(await getAllFiles());
+
+            const files = await getAllFiles();
+
+            console.log(files);
+
+            setFiles(files);
 
             const file = await getLiveTranscription() as GetCIDResponse | null;
 
@@ -50,7 +55,7 @@ export default function Transcriptions() {
             const transcript = file.data as unknown as Transcript;
             setLatestTranscript(transcript);
         };
-        let int = setInterval(fetchFiles, 5000);
+        let int = setInterval(fetchFiles, 1000);
         return () => {
             setFiles(null);
             clearInterval(int);
@@ -97,7 +102,7 @@ export default function Transcriptions() {
                 </b>
             </div>
 
-            <div
+            {latestTranscript && (<div
                 className="animate-fade-in-up w-full flex flex-col justify-start items-start max-w-[800px] bg-primary/5 rounded-lg border border-primary/20 p-2 gap-2 max-h-[80vh] overflow-y-auto scroll">
                 <div className="flex cursor-pointer flex-row w-full gap-2 justify-start items-center opacity-100 hover:opacity-80 transition-opacity">
                     <FileIcon size="16" />
@@ -105,10 +110,10 @@ export default function Transcriptions() {
                 </div>
                 {/* {file.cid === currentFile?.cid && currentFileURL && <iframe src={currentFileURL} className="w-full h-96 animate-max-height" />} */}
 
-                {latestTranscript && (
-                    <TranscriptPage transcript={latestTranscript} currentFile={null} />
-                )}
-            </div>
+
+                <TranscriptPage transcript={latestTranscript} currentFile={null} />
+
+            </div>)}
 
             {files ? files.map((file) => (
                 <div
@@ -143,8 +148,12 @@ function TranscriptPage({
         if (currentFile?.name) {
             const file = await getFileByName(currentFile.name.replaceAll(".json", ".pdf"));
 
+            if (!file) {
+                return;
+            }
+
             // download the pdf
-            const blob = new Blob([file.data! as Blob], { type: "application/pdf" });
+            const blob = new Blob([file?.data! as Blob], { type: "application/pdf" });
             const url = URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = url;

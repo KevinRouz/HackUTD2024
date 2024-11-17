@@ -15,7 +15,7 @@ export async function getAllFiles() {
 
     const pinata = getPinata();
 
-    const files = await pinata.files.list().order("DESC").mimeType("application/json")
+    const files = await pinata.files.list().order("DESC").mimeType("application/json").limit(10);
 
     console.log(files);
 
@@ -25,7 +25,7 @@ export async function getAllFiles() {
 }
 
 export async function getFile(id: string) {
-    
+
     console.log("Getting file with id: " + id);
 
     const pinata = getPinata();
@@ -39,13 +39,18 @@ export async function getFile(id: string) {
 
 export async function getFileByName(name: string) {
 
-    const pinata = getPinata();
+    try {
+        const pinata = getPinata();
 
-    const files = await pinata.files.list().name(name).limit(1)
+        const files = await pinata.files.list().name(name).limit(1)
 
-    const file = await pinata.gateways.get(files.files[0].cid);
+        const file = await pinata.gateways.get(files.files[0].cid);
 
-    return file;
+        return file;
+    } catch (e) {
+        console.log(e);
+        return null;
+    }
 
 }
 
@@ -54,7 +59,7 @@ export async function getLiveTranscription() {
     try {
         const file = await getFileByName("latest.json")
         return file;
-    } catch (e) {     
+    } catch (e) {
         return null;
     }
 }
