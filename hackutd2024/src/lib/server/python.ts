@@ -71,11 +71,14 @@ export async function getLiveTranscription() {
         const file = await getFileByName("latest.json")
         return file;
     } catch (e) {
+        console.log(e);
         return null;
     }
 }
 
 export async function getLatestJSON() {
-    const res = await fetch("http://localhost:8000/latest")
+    const res = await fetch("http://localhost:8000/latest", {
+        signal: AbortSignal.timeout(1000)
+    })
     return await res.json();
 }

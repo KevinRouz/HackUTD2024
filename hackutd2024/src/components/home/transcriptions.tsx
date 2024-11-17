@@ -1,9 +1,9 @@
 "use client";
 
-import { getAllFiles, getFile, getFileByName, getLatestJSON, getLiveTranscription } from "@/lib/server/python";
+import { getAllFiles, getFile, getFileByName } from "@/lib/server/python";
 import { cn } from "@/lib/utils";
 import { FileIcon } from "lucide-react";
-import { FileListItem, FileListResponse, GetCIDResponse } from "pinata";
+import { FileListItem, GetCIDResponse } from "pinata";
 import { useEffect, useState } from "react";
 
 type Source = {
@@ -35,51 +35,53 @@ export default function Transcriptions() {
     const [latestTranscript, setLatestTranscript] = useState<Transcript | null>(null);
 
     useEffect(() => {
-        
+        setLatestTranscript(null);
+
         const fetchFiles = async () => {
 
             const files = await getAllFiles();
 
             console.log(files);
+            console.log(currentFileURL)
 
             setFiles(files);
-            
+
         };
-        let int = setInterval(fetchFiles, 5000);
-        
+        const int = setInterval(fetchFiles, 5000);
+
         return () => {
             setFiles(null);
             clearInterval(int);
         };
     }, []);
 
-    useEffect(() => {
-        const fetchLatest = async () => {
-            // const file = await getLiveTranscription() as GetCIDResponse | null;
+    // useEffect(() => {
+    //     const fetchLatest = async () => {
+    //         // const file = await getLiveTranscription() as GetCIDResponse | null;
 
-            // console.log(file);
-            // if (!file) {
-            //     setLatestTranscript(null);
-            //     return;
-            // }
+    //         // console.log(file);
+    //         // if (!file) {
+    //         //     setLatestTranscript(null);
+    //         //     return;
+    //         // }
 
 
-            // const transcript = file.data as unknown as Transcript;
-            // setLatestTranscript(transcript);
+    //         // const transcript = file.data as unknown as Transcript;
+    //         // setLatestTranscript(transcript);
 
-            // setLatestTranscript(await getLatestJSON() as Transcript);
-            await getLatestJSON().then(json => {
-                setLatestTranscript(json)
-            })
-            console.log("TEST")
-        }
+    //         // setLatestTranscript(await getLatestJSON() as Transcript);
+    //         await getLatestJSON().then(json => {
+    //             setLatestTranscript(json)
+    //         })
+    //         console.log("TEST")
+    //     }
 
-        let int2 = setInterval(fetchLatest, 10000);
+    //     let int2 = setInterval(fetchLatest, 10000);
 
-        return () => {
-            clearInterval(int2);
-        }
-    })
+    //     return () => {
+    //         clearInterval(int2);
+    //     }
+    // })
 
     const onFileSelection = async (_file: FileListItem) => {
 
@@ -140,7 +142,10 @@ export default function Transcriptions() {
                     className="animate-fade-in-up w-full flex flex-col justify-start items-start max-w-[800px] bg-primary/5 rounded-lg border border-primary/20 p-2 gap-2 max-h-[80vh] overflow-y-auto scroll">
                     <div onClick={() => onFileSelection(file)} className="flex cursor-pointer flex-row w-full gap-2 justify-start items-center opacity-100 hover:opacity-80 transition-opacity">
                         <FileIcon size="16" />
-                        <h2 className="text-lg">{file.keyvalues.title}</h2>
+                        <div className="w-full flex flex-row justify-between items-center">
+                            <h2 className="text-lg">{file.keyvalues.title}</h2>
+                            <h2 className="text-md text-primary/50">{(new Date(file.created_at)).toUTCString()}</h2>
+                        </div>
                     </div>
                     {/* {file.cid === currentFile?.cid && currentFileURL && <iframe src={currentFileURL} className="w-full h-96 animate-max-height" />} */}
 
@@ -172,7 +177,7 @@ function TranscriptPage({
             }
 
             // download the pdf
-            const blob = new Blob([file?.data! as Blob], { type: "application/pdf" });
+            const blob = new Blob([file?.data as Blob], { type: "application/pdf" });
             const url = URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = url;
