@@ -11,6 +11,8 @@ function getPinata() {
 
 export async function getAllFiles() {
 
+    try {
+
     console.log("Getting all files");
 
     const pinata = getPinata();
@@ -20,6 +22,11 @@ export async function getAllFiles() {
     console.log(files);
 
     return files.files.filter((file) => file.name !== "latest.json");
+
+    } catch (e) {
+        console.log(e);
+        return [];
+    }
 
     //   return fs.readdirSync(path.join(__dirname, 'python'));
 }
@@ -43,6 +50,10 @@ export async function getFileByName(name: string) {
         const pinata = getPinata();
 
         const files = await pinata.files.list().name(name).limit(1)
+
+        if (files.files.length === 0) {
+            return null;
+        }
 
         const file = await pinata.gateways.get(files.files[0].cid);
 

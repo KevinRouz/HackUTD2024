@@ -35,14 +35,7 @@ export default function Transcriptions() {
     const [latestTranscript, setLatestTranscript] = useState<Transcript | null>(null);
 
     useEffect(() => {
-        const fetchFiles = async () => {
-
-            const files = await getAllFiles();
-
-            console.log(files);
-
-            setFiles(files);
-
+        const fetchLatest = async () => {
             const file = await getLiveTranscription() as GetCIDResponse | null;
 
             if (!file) {
@@ -54,11 +47,24 @@ export default function Transcriptions() {
 
             const transcript = file.data as unknown as Transcript;
             setLatestTranscript(transcript);
+        }
+        const fetchFiles = async () => {
+
+            
+
+            const files = await getAllFiles();
+
+            console.log(files);
+
+            setFiles(files);
+            
         };
         let int = setInterval(fetchFiles, 1000);
+        let int2 = setInterval(fetchLatest, 1000);
         return () => {
             setFiles(null);
             clearInterval(int);
+            clearInterval(int2);
         };
     }, []);
 
