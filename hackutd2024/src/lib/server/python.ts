@@ -19,7 +19,7 @@ export async function getAllFiles() {
 
     console.log(files);
 
-    return files;
+    return files.files.filter((file) => file.name !== "latest.json");
 
     //   return fs.readdirSync(path.join(__dirname, 'python'));
 }
@@ -47,4 +47,14 @@ export async function getFileByName(name: string) {
 
     return file;
 
+}
+
+export async function getLiveTranscription() {
+
+    try {
+        const file = await getFileByName("latest.json")
+        return file;
+    } catch (e) {     
+        return null;
+    }
 }
