@@ -1,6 +1,6 @@
 "use client";
 
-import { getAllFiles, getFile, getFileByName, getLiveTranscription } from "@/lib/server/python";
+import { getAllFiles, getFile, getFileByName, getLatestJSON, getLiveTranscription } from "@/lib/server/python";
 import { cn } from "@/lib/utils";
 import { FileIcon } from "lucide-react";
 import { FileListItem, FileListResponse, GetCIDResponse } from "pinata";
@@ -35,22 +35,8 @@ export default function Transcriptions() {
     const [latestTranscript, setLatestTranscript] = useState<Transcript | null>(null);
 
     useEffect(() => {
-        const fetchLatest = async () => {
-            const file = await getLiveTranscription() as GetCIDResponse | null;
-
-            if (!file) {
-                setLatestTranscript(null);
-                return;
-            }
-
-            console.log(file);
-
-            const transcript = file.data as unknown as Transcript;
-            setLatestTranscript(transcript);
-        }
+        
         const fetchFiles = async () => {
-
-            
 
             const files = await getAllFiles();
 
@@ -59,14 +45,41 @@ export default function Transcriptions() {
             setFiles(files);
             
         };
-        let int = setInterval(fetchFiles, 1000);
-        let int2 = setInterval(fetchLatest, 1000);
+        let int = setInterval(fetchFiles, 5000);
+        
         return () => {
             setFiles(null);
             clearInterval(int);
-            clearInterval(int2);
         };
     }, []);
+
+    useEffect(() => {
+        const fetchLatest = async () => {
+            // const file = await getLiveTranscription() as GetCIDResponse | null;
+
+            // console.log(file);
+            // if (!file) {
+            //     setLatestTranscript(null);
+            //     return;
+            // }
+
+
+            // const transcript = file.data as unknown as Transcript;
+            // setLatestTranscript(transcript);
+
+            // setLatestTranscript(await getLatestJSON() as Transcript);
+            await getLatestJSON().then(json => {
+                setLatestTranscript(json)
+            })
+            console.log("TEST")
+        }
+
+        let int2 = setInterval(fetchLatest, 10000);
+
+        return () => {
+            clearInterval(int2);
+        }
+    })
 
     const onFileSelection = async (_file: FileListItem) => {
 

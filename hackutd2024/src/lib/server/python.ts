@@ -74,3 +74,8 @@ export async function getLiveTranscription() {
         return null;
     }
 }
+
+export async function getLatestJSON() {
+    const res = await fetch("http://localhost:8000/latest")
+    return await res.json();
+}
