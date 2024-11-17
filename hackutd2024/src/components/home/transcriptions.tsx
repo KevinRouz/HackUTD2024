@@ -96,6 +96,9 @@ export default function Transcriptions() {
                     KnowNonsense
                 </b>
             </div>
+            <p className="text-base mb-4">
+                Real time fact checking pushing the conversation forward.
+            </p>
             {files ? files.files.map((file) => (
                 <div
                     key={file.id}
