@@ -12,15 +12,6 @@ client = openai.OpenAI(
     base_url="https://api.sambanova.ai/v1",
 )
 
-response = client.chat.completions.create(
-    model='Meta-Llama-3.1-8B-Instruct',
-    messages=[{"role":"system","content":"You are a helpful assistant"},{"role":"user","content":"Hello"}],
-    temperature =  0.1,
-    top_p = 0.1
-)
-
-print(response.choices[0].message.content)
-
 app = FastAPI()
 
 class Message:
@@ -58,8 +49,24 @@ def start_transcript():
     return {"status": "started"}
 
 @app.post("/transcript")
-def add_transcript(transcript: str, user: str):
+def add_transcript(message: str, user: str):
     transcript.add_message(
-        Message(text=transcript, user=user)
+        Message(text=message, user=user)
     )
-    return {"transcript": transcript}
+    
+    response = client.chat.completions.create(
+        model='Meta-Llama-3.1-8B-Instruct',
+        messages=[
+            {"role":"system", "content": "You are a judge trying to determine whether or not a statement in this message is a claim or a opinion."},
+            {"role":"user", "content": message + "\nRegardless of it's validity, does this message make an objective claim or a subjective opinion? Answer with only 'claim' or 'opinion'"} 
+        ],
+        temperature =  0.1,
+        top_p = 0.1
+    )
+
+    print(response.choices[0].message.content)
+
+    return {"transcript": message}
+
+start_transcript()
+add_transcript("The world is flat", "1")
