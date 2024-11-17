@@ -1,0 +1,3 @@
+[submodule "HackUTD2024API"]
+	path = HackUTD2024API
+	url = https://github.com/bluestarburst/HackUTD2024API.git
