@@ -15,7 +15,7 @@ export async function getAllFiles() {
 
     const pinata = getPinata();
 
-    const files = await pinata.files.list().order("DESC");
+    const files = await pinata.files.list().order("DESC").mimeType("application/json")
 
     console.log(files);
 
@@ -35,4 +35,16 @@ export async function getFile(id: string) {
     console.log(file);
 
     return file;
+}
+
+export async function getFileByName(name: string) {
+
+    const pinata = getPinata();
+
+    const files = await pinata.files.list().name(name).limit(1)
+
+    const file = await pinata.gateways.get(files.files[0].cid);
+
+    return file;
+
 }
