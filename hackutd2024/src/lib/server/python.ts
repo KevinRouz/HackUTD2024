@@ -17,7 +17,7 @@ export async function getAllFiles() {
 
     const pinata = getPinata();
 
-    const files = await pinata.files.list().order("DESC").mimeType("application/json").limit(10);
+    const files = await pinata.files.list().order("DESC").mimeType("application/pdf").limit(10);
 
     console.log(files);
 

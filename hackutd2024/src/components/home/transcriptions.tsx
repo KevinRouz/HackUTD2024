@@ -123,18 +123,17 @@ export default function Transcriptions() {
                 </b>
             </div>
 
-            {latestTranscript && (<div
+            {/* {latestTranscript && (<div
                 className="animate-fade-in-up w-full flex flex-col justify-start items-start max-w-[800px] bg-primary/5 rounded-lg border border-primary/20 p-2 gap-2 max-h-[80vh] overflow-y-auto scroll">
                 <div className="flex cursor-pointer flex-row w-full gap-2 justify-start items-center opacity-100 hover:opacity-80 transition-opacity">
                     <FileIcon size="16" />
                     <h2 className="text-lg">Live</h2>
                 </div>
-                {/* {file.cid === currentFile?.cid && currentFileURL && <iframe src={currentFileURL} className="w-full h-96 animate-max-height" />} */}
 
 
                 <TranscriptPage transcript={latestTranscript} currentFile={null} />
 
-            </div>)}
+            </div>)} */}
 
             {files ? files.map((file) => (
                 <div
@@ -147,11 +146,11 @@ export default function Transcriptions() {
                             <h2 className="text-md text-primary/50">{(new Date(file.created_at)).toUTCString()}</h2>
                         </div>
                     </div>
-                    {/* {file.cid === currentFile?.cid && currentFileURL && <iframe src={currentFileURL} className="w-full h-96 animate-max-height" />} */}
+                    {file.cid === currentFile?.cid && currentFileURL && <iframe src={currentFileURL} className="w-full h-96 animate-max-height" />}
 
-                    {file.cid === currentFile?.cid && transcript && (
+                    {/* {file.cid === currentFile?.cid && transcript && (
                         <TranscriptPage transcript={transcript} currentFile={currentFile} />
-                    )}
+                    )} */}
                 </div>
             )) : (
                 <p>Loading...</p>
